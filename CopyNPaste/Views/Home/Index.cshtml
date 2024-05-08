@@ -1,0 +1,90 @@
+﻿@using CopyNPaste.ViewModels
+@model CopyViewModel
+@{
+
+}
+<div class="container">
+    <form asp-action="MakePaste" method="post">
+        <input  type="hidden" asp-for="UserId"/>
+        <div class="form form-mid">
+            <div class="form-block">
+                <div class="sub-mid">
+                    <input asp-for="Subject" placeholder="Title" />
+                </div>
+                <div class="btn-group padding_format">
+                    <button type="button" class="formatButton" data-tag="BeStrong">B</button>
+                    <button type="button" class="formatButton" data-tag="BeItalic">I</button>
+                    <button type="button" class="formatButton" data-tag="BeStrike">S</button>
+                    <button type="button" class="formatButton" data-tag="BeUnderLine">U</button>
+                    <button type="button" class="formatButton" data-tag="BeQuotation">Q</button>
+                    <button type="button" class="formatButton" data-tag="BeLink">A</button>
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" id="sizeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Size
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="sizeDropdown">
+                            @foreach (var size in Model.SizeCodes)
+                            {
+                                <button type="button" class="dropdown-item formatButton" data-tag="BeSize=@size.ToString()">@size</button>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="dropdown ">
+                        <button class="dropdown-toggle" type="button" id="colorDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Color
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="colorDropdown">
+                            <div class="color-options">
+                                @foreach (var color in Model.ColorCodes)
+                                {
+                                    <button type="button" class="color-option formatButton" data-tag="BeColor=@color" style="background-color: @color; width: 30px; height: 30px;"></button>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <textarea asp-for="Body" class="textarea" id="board_content"></textarea>
+            </div>
+            <label asp-for="Password" class="form-check-label"></label>
+
+            <input type="password" asp-for="Password" />
+            <div class="button-container">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="button" id="clearButton" value="Clear" class="btn btn-primary" />
+                <input type="button" id="toggleLanguageButton" value="Toggle Language (Hebrew)" class="btn btn-primary" />
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+<script>
+    $(document).ready(function () {
+        $('.formatButton').click(function () {
+            var tag = $(this).data('tag');
+            var textarea = $('#board_content');
+            var cursorPos = textarea.prop('selectionStart');
+            var text = textarea.val();
+            var selectedText = `<${tag}></${tag}>`;
+
+            if (cursorPos || cursorPos === 0) {
+                var textBefore = text.substring(0, cursorPos);
+                var textAfter = text.substring(cursorPos, text.length);
+                textarea.val(textBefore + selectedText + textAfter);
+            } else {
+                textarea.val(text + selectedText);
+            }
+            textarea.focus();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#clearButton').click(function () {
+            $('#board_content').val('');
+        });
+    });
+</script>

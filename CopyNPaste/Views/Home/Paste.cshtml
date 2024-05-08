@@ -1,0 +1,95 @@
+﻿@model CopyNPaste.Core.Entities.Copy
+@{
+
+}
+<div class="container">
+    <div class="form form-mid " id="fullscreenElement">
+        <div class="form-block">
+            @Model.Subject
+        </div>
+        <div id="formBlock">
+            <pre id="bodyContent" class="ltr">@Html.Raw(Model.Body)</pre>
+        </div>
+        <div class="button-container">
+            <a asp-controller="Home" asp-action="Index" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+            <a href="/Index" class="btn btn-primary">New</a>
+            <input type="button" id="toggleFullscreenButton" value="Toggle Fullscreen" class="btn btn-primary" />
+            <input type="button" id="toggleLineNumbersButton" value="Line Numbers" class="btn btn-primary" />
+            <input type="button" id="copyContentButton" value="Copy Content" class="btn btn-primary" />
+            <input type="button" id="toggleLanguageButton" value="Toggle Language (Hebrew)" class="btn btn-primary" />
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            var $formBlock = $('#formBlock');
+            var $preElement = $formBlock.find('pre');
+            var originalContent = $preElement.html().trim();
+            var lineNumbersVisible = false;
+
+            function addLineNumbers() {
+                var lines = originalContent.split('\n');
+                var newContent = '';
+                for (var i = 0; i < lines.length; i++) {
+                    newContent += (i + 1) + '. ' + lines[i] + '\n';
+                }
+                $preElement.html('@Html.Raw("' + newContent + '")');
+                lineNumbersVisible = true;
+            }
+
+            function removeLineNumbers() {
+                $preElement.html('@Html.Raw("' + originalContent + '")');
+                lineNumbersVisible = false;
+            }
+
+            $('#toggleLineNumbersButton').click(function () {
+                if (lineNumbersVisible) {
+                    removeLineNumbers();
+                } else {
+                    addLineNumbers();
+                }
+            });
+        });
+
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            function toggleFullScreen() {
+                var elem = document.getElementById("fullscreenElement");
+                if (!document.fullscreenElement) {
+                    elem.requestFullscreen().catch(err => {
+                        console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            $("#toggleFullscreenButton").click(toggleFullScreen);
+
+            $(document).on("fullscreenchange", function () {
+                var isFullScreen = document.fullscreenElement !== null;
+                $("#toggleFullscreenButton").val(isFullScreen ? "Exit Fullscreen" : "Toggle Fullscreen");
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#copyContentButton").click(function () {
+                var content = $("#formBlock").html();
+                navigator.clipboard.writeText(content)
+                    .then(function () {
+                        console.log('Content copied to clipboard successfully!');
+                    })
+                    .catch(function (err) {
+                        console.error('Failed to copy content to clipboard: ', err);
+                    });
+            });
+
+        });
+    </script>
+}

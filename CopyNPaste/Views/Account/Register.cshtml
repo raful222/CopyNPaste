@@ -1,0 +1,28 @@
+﻿@using CopyNPaste.ViewModels
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register</h1>
+
+@if (!string.IsNullOrEmpty(ViewBag.Error))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
+}
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input class="form-input" type="text" asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input class="form-input" type="password" asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>

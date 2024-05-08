@@ -1,0 +1,38 @@
+﻿@using CopyNPaste.ViewModels
+@model PersonalAreaViewModel
+@{
+    ViewData["Title"] = "Personal Area";
+}
+<div class="personalarea">
+
+    <h1>Personal Area</h1>
+
+    <p><strong>Email:</strong> @Model.Email</p>
+
+    <h2>Copies:</h2>
+    <ul>
+        @foreach (var copy in Model.Copies)
+        {
+            <li>
+                <div class="copy-info">
+
+                @if (copy.Subject != null)
+                {
+                    <a href="@Url.Action("Paste", "Home", new { Id = copy.Id })">@copy.Subject</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Paste", "Home", new { Id = copy.Id })">No subject</a>
+                }
+                @if (!string.IsNullOrEmpty(copy.Password))
+                {
+                       <span>
+                           Password : 
+                        @copy.Password
+                    </span>
+                }
+                </div>
+            </li>
+        }
+    </ul>
+</div>
